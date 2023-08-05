@@ -4,12 +4,15 @@ phases:
   install:
     runtime-versions:
       java: corretto17
+  pre_build:
+    commands:
+      - echo 'Build execution started...'
   build:
     commands:
       - mvn clean install
   post_build:
     commands:
-      - echo 'Build Completed'
+      - echo 'Build execution completed...'
 artifacts:
   files:
     - target/*.jar
