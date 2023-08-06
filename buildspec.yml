@@ -6,13 +6,19 @@ phases:
       java: corretto17
   pre_build:
     commands:
-      - echo 'Build execution started..'
+      - echo 'Build execution started...'
+      - yum update -y && yum install sshpass -y
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - LATEST_BE_IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-8)
   build:
     commands:
       - mvn clean install
+      - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/java-web-app:$LATEST_BE_IMAGE_TAG .
+      - docker image push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/java-web-app:$LATEST_BE_IMAGE_TAG
+      - sshpass -p "$SRVR_PWD" ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$SERVER_IP "sh deploy.sh"
   post_build:
     commands:
-      - echo 'Build execution completed'
+      - echo 'Build execution completed...'
 artifacts:
   files:
     - target/*.jar
