@@ -6,7 +6,7 @@ phases:
       java: corretto11
   pre_build:
     commands:
-      - echo 'Build execution started...'
+      - echo 'Build execution started..'
       - apt-get update -y && apt-get install sshpass -y
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - LATEST_BE_IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-8)
@@ -18,7 +18,7 @@ phases:
       - sshpass -p "$SRVR_PWD" ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$SERVER_IP "sh deploy.sh $LATEST_BE_IMAGE_TAG"
   post_build:
     commands:
-      - echo 'Build execution completed...'
+      - echo 'Build execution completed..'
 artifacts:
   files:
     - target/*.jar
