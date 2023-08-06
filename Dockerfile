@@ -1,3 +1,4 @@
+# Specifying the Base image
 FROM public.ecr.aws/amazoncorretto/amazoncorretto:11.0.19-al2023-headless
 WORKDIR /usr/src/app
 COPY target/*.jar ./HelloWorld.jar
